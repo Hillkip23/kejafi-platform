@@ -1,0 +1,44 @@
+﻿# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.env
+venv/
+env/
+
+# Streamlit
+.streamlit/secrets.toml
+.streamlit/cache/
+
+# Data storage (keep structure, ignore content)
+api_data/
+stage1_output/
+stage2_output/
+stage3_output/
+figures/
+
+# Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/.env.local
+frontend/out/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+*.key
+*.pem

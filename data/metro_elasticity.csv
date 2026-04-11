@@ -1,0 +1,12 @@
+metro_name,elasticity,supply_bucket,description
+San Francisco,0.08,very inelastic,Coastal/land constrained
+New York,0.10,very inelastic,Dense urban/regulation
+Los Angeles,0.12,very inelastic,Geographic constraints
+Miami,0.15,inelastic,Coastal/water table
+Seattle,0.15,inelastic,Water/geography constraints
+Chicago,0.22,inelastic,Moderate regulation
+Charlotte,0.35,neutral,Moderate building
+Atlanta,0.38,neutral,Some land constraints
+Nashville,0.42,elastic,Pro-development
+Dallas,0.45,elastic,Abundant land
+Austin,0.48,elastic,Pro-growth policies
