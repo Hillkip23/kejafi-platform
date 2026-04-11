@@ -1,4 +1,4 @@
-﻿# stage3.py - Portfolio Management with API integration
+# stage3.py - Portfolio Management with API integration
 import json
 from pathlib import Path
 from dataclasses import dataclass, field
@@ -25,14 +25,14 @@ BASE_DIR = Path(__file__).resolve().parent
 STAGE1_OUTPUT_DIR = BASE_DIR / "stage1_output"
 STAGE2_OUTPUT_DIR = BASE_DIR / "stage2_output"
 STAGE3_OUTPUT_DIR = BASE_DIR / "stage3_output"
-API_URL = "http://127.0.0.1:8000"
+API_URL = os.getenv("KEJAFI_API_URL", "http://127.0.0.1:8000")
 
 STAGE3_OUTPUT_DIR.mkdir(exist_ok=True)
 
 st.set_page_config(
     page_title="Kejafi Portfolio Management",
     layout="wide",
-    page_icon="📊"
+    page_icon="??"
 )
 
 # =========================================================
@@ -213,11 +213,11 @@ class PortfolioAnalyzer:
 # =========================================================
 
 def render_import_section() -> List[PortfolioAsset]:
-    st.header("📥 Import Assets")
+    st.header("?? Import Assets")
     
     # Option 1: Import from API
     st.subheader("Option 1: Import from API (Live)")
-    if st.button("🔄 Fetch Properties from API"):
+    if st.button("?? Fetch Properties from API"):
         with st.spinner("Fetching from API..."):
             api_properties = fetch_properties_from_api()
             if api_properties:
@@ -229,7 +229,7 @@ def render_import_section() -> List[PortfolioAsset]:
     
     # Option 2: Load demo assets
     st.subheader("Option 2: Load Demo Assets")
-    if st.button("📊 Load Demo Assets"):
+    if st.button("?? Load Demo Assets"):
         demo_assets = [
             PortfolioAsset(
                 asset_id="demo_charlotte",
@@ -302,7 +302,7 @@ def render_import_section() -> List[PortfolioAsset]:
 
 
 def render_allocation(portfolio: Portfolio) -> Portfolio:
-    st.header("💰 Portfolio Allocation")
+    st.header("?? Portfolio Allocation")
     
     if not portfolio.assets:
         st.info("No assets. Import first.")
@@ -334,13 +334,13 @@ def render_allocation(portfolio: Portfolio) -> Portfolio:
 # =========================================================
 
 def main():
-    st.title("📊 Kejafi Stage 3: Portfolio Management")
+    st.title("?? Kejafi Stage 3: Portfolio Management")
     st.markdown("Import assets from Stage 2 (API or files), then manage your portfolio.")
     
     if "portfolio" not in st.session_state:
         st.session_state.portfolio = Portfolio(assets=[])
     
-    tab1, tab2 = st.tabs(["📥 Import Assets", "💰 Portfolio"])
+    tab1, tab2 = st.tabs(["?? Import Assets", "?? Portfolio"])
     
     with tab1:
         imported = render_import_section()
@@ -352,7 +352,7 @@ def main():
         st.session_state.portfolio = render_allocation(st.session_state.portfolio)
         
         if st.session_state.portfolio.total_value > 0:
-            st.subheader("📈 Portfolio Summary")
+            st.subheader("?? Portfolio Summary")
             analyzer = PortfolioAnalyzer(st.session_state.portfolio)
             col1, col2 = st.columns(2)
             col1.metric("Total Value", f"${st.session_state.portfolio.total_value:,.0f}")

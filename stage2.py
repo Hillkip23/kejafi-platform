@@ -64,7 +64,7 @@ def apply_custom_styling():
 st.set_page_config(page_title="Kejafi Single-Asset Tokenization", layout="wide")
 
 BASE_DIR = Path(__file__).resolve().parent
-API_URL = "http://127.0.0.1:8000"
+API_URL = os.getenv("KEJAFI_API_URL", "http://127.0.0.1:8000")
 FIG_DIR = BASE_DIR / "figures"
 FIG_DIR.mkdir(exist_ok=True)
 
