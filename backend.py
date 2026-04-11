@@ -1,4 +1,4 @@
-﻿# backend.py - Clean API for Kejafi Workspace
+# backend.py - Clean API for Kejafi Workspace
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -78,7 +78,7 @@ def get_contracts():
 if __name__ == "__main__":
     import uvicorn
     print("=" * 50)
-    print("🚀 Kejafi API Running")
-    print("📍 http://localhost:8000")
+    print("?? Kejafi API Running")
+    print("?? http://localhost:8000")
     print("=" * 50)
     uvicorn.run(app, host="127.0.0.1", port=8000)
