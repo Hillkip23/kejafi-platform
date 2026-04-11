@@ -1,5 +1,6 @@
 # stage3.py - Portfolio Management with API integration
 import json
+import os
 from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Any
