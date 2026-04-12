@@ -7,7 +7,7 @@ from datetime import datetime
 import json
 from pathlib import Path
 
-app = FastAPI(title="Kejafi API", version="1.0.0")
+app = FastAPI(title="Kejafi API", version="1.0.1")
 
 app.add_middleware(
     CORSMiddleware,
