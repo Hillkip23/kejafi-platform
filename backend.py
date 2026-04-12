@@ -1,4 +1,4 @@
-# backend.py - Clean API for Kejafi Workspace
+﻿# backend.py - Clean API for Kejafi Workspace
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -6,6 +6,7 @@ from typing import Optional, List
 from datetime import datetime
 import json
 from pathlib import Path
+import os
 
 app = FastAPI(title="Kejafi API", version="1.0.1")
 
@@ -42,13 +43,28 @@ class PropertyCreate(BaseModel):
     county: Optional[str] = None
     metro: Optional[str] = None
     list_price: float
+    noi: Optional[float] = None
+    cap_rate: Optional[float] = None
+    irr: Optional[float] = None
+    equity_multiple: Optional[float] = None
     token_symbol: str
     token_address: str
+    token_price: Optional[float] = None
+    total_supply: Optional[int] = 100000
+    lockup_months: Optional[int] = 12
     pool_address: Optional[str] = None
+    chain_id: Optional[int] = 11155111
+    pci_2023: Optional[float] = None
+    pop_growth: Optional[float] = None
+    risk_score: Optional[float] = None
+    risk_bucket: Optional[str] = None
+    supply_bucket: Optional[str] = None
+    metro_elasticity: Optional[float] = None
+    created_at: Optional[str] = None
 
 @app.get("/")
 def root():
-    return {"message": "Kejafi API Running", "workspace": "Kejafi_Workspace"}
+    return {"message": "Kejafi API Running", "version": "1.0.1"}
 
 @app.get("/health")
 def health():
@@ -57,6 +73,12 @@ def health():
 @app.get("/properties")
 def get_properties():
     return list(properties_db.values())
+
+@app.get("/properties/{property_id}")
+def get_property(property_id: str):
+    if property_id not in properties_db:
+        raise HTTPException(status_code=404, detail="Property not found")
+    return properties_db[property_id]
 
 @app.post("/properties")
 def create_property(prop: PropertyCreate):
@@ -77,8 +99,9 @@ def get_contracts():
 
 if __name__ == "__main__":
     import uvicorn
+    port = int(os.environ.get("PORT", 8000))
     print("=" * 50)
-    print("?? Kejafi API Running")
-    print("?? http://localhost:8000")
+    print("🚀 Kejafi API Running")
+    print(f"📍 Port: {port}")
     print("=" * 50)
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=port)
