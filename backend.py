@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 import os
 
-app = FastAPI(title="Kejafi API", version="1.0.1")
+app = FastAPI(title="Kejafi API", version="1.0.2")
 
 app.add_middleware(
     CORSMiddleware,
@@ -37,6 +37,7 @@ def save_data():
 
 load_data()
 
+# Complete model matching stage2.py payload
 class PropertyCreate(BaseModel):
     id: str
     address: str
@@ -60,11 +61,22 @@ class PropertyCreate(BaseModel):
     risk_bucket: Optional[str] = None
     supply_bucket: Optional[str] = None
     metro_elasticity: Optional[float] = None
+    nav_total: Optional[float] = None
+    nav_per_token: Optional[float] = None
+    nav_currency: Optional[str] = "USD"
+    amm: Optional[str] = "uniswap_v3"
+    quote_asset: Optional[str] = "USDC"
+    initial_price: Optional[float] = None
+    seed_token_amount: Optional[int] = None
+    seed_quote_amount: Optional[float] = None
+    fee_tier: Optional[float] = 0.003
+    price_range_low: Optional[float] = None
+    price_range_high: Optional[float] = None
     created_at: Optional[str] = None
 
 @app.get("/")
 def root():
-    return {"message": "Kejafi API Running", "version": "1.0.1"}
+    return {"message": "Kejafi API Running", "version": "1.0.2"}
 
 @app.get("/health")
 def health():
