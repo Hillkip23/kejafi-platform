@@ -1,4 +1,4 @@
-﻿# backend.py - Clean API for Kejafi Workspace
+# backend.py - Clean API for Kejafi Workspace
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 import os
 
-app = FastAPI(title="Kejafi API", version="1.0.2")
+app = FastAPI(title="Kejafi API", version="1.0.3")
 
 app.add_middleware(
     CORSMiddleware,
@@ -113,7 +113,7 @@ if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 8000))
     print("=" * 50)
-    print("🚀 Kejafi API Running")
-    print(f"📍 Port: {port}")
+    print("?? Kejafi API Running")
+    print(f"?? Port: {port}")
     print("=" * 50)
     uvicorn.run(app, host="0.0.0.0", port=port)
