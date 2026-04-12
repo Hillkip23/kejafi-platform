@@ -345,8 +345,7 @@ def push_property_to_api(prop_id: str, valuation: ValuationResult, market: Dict,
         "pool_address": POOL_ADDRESS,
     }
     try:
-        r = requests.post(f"{API_URL}/properties/", json=payload, timeout=10,
-                         headers={"X-API-Key": os.environ.get("KEJAFI_PROD_KEY", "prod_key_placeholder")})
+        r = requests.post(f"{API_URL}/properties/", json=payload, timeout=10)
         r.raise_for_status()
         return r.json()
     except requests.exceptions.ConnectionError:
