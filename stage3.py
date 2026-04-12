@@ -1,4 +1,4 @@
-# stage3.py - Portfolio Management with API integration
+﻿# stage3.py - Portfolio Management with API integration
 import json
 import os
 from pathlib import Path
@@ -33,7 +33,7 @@ STAGE3_OUTPUT_DIR.mkdir(exist_ok=True)
 st.set_page_config(
     page_title="Kejafi Portfolio Management",
     layout="wide",
-    page_icon="??"
+    page_icon="📊"
 )
 
 # =========================================================
@@ -114,39 +114,54 @@ def fetch_properties_from_api() -> List[Dict]:
 
 
 def convert_api_property_to_asset(prop: Dict) -> PortfolioAsset:
-    """Convert API property to PortfolioAsset"""
-    # Determine token info
+    """Convert API property to PortfolioAsset using actual API data"""
+    
+    # Use actual values from API
     token_symbol = prop.get("token_symbol", "FINE5")
     token_address = prop.get("token_address", FINE5_ADDRESS)
+    token_price = prop.get("token_price", 25.0)
+    property_value = prop.get("list_price", 0)
     
-    # Estimate returns based on metro (simplified)
-    expected_return = 0.10  # default 10%
-    volatility = 0.15  # default 15%
+    # Use IRR as expected return if available
+    expected_return = prop.get("irr", 0.10)
+    
+    # Use rent volatility from API if available
+    volatility = prop.get("rent_volatility", 0.15)
+    if not volatility or volatility == 0:
+        volatility = 0.15
+    
+    # Use risk score from API
+    risk_score = prop.get("risk_score", 50)
+    
+    # Use rent growth from API
+    rent_growth = prop.get("rent_growth", 0.04)
+    if not rent_growth:
+        rent_growth = 0.04
     
     return PortfolioAsset(
         asset_id=prop.get("id", "unknown"),
         name=prop.get("address", "Unknown Property")[:40],
         property_type="Multifamily",
         metro=prop.get("metro", "Unknown"),
-        property_value=prop.get("list_price", 0),
-        token_price=prop.get("token_price", 25.0) if prop.get("token_price") else 25.0,
-        market_cap=prop.get("list_price", 0),
+        property_value=property_value,
+        token_price=token_price,
+        market_cap=property_value,
         expected_return_1y=expected_return,
         expected_return_5y=expected_return * 5,
         volatility=volatility,
-        var95=prop.get("list_price", 0) * 0.8,
-        sharpe_ratio=0.7,
+        var95=property_value * 0.8,
+        sharpe_ratio=expected_return / volatility if volatility > 0 else 0.7,
         max_drawdown=-0.20,
-        total_supply=100000,
+        total_supply=prop.get("total_supply", 100000),
         management_fee=0.02,
         performance_fee=0.20,
         token_symbol=token_symbol,
         token_address=token_address,
-        rent_growth=0.04,
-        rent_volatility=0.08,
-        supply_elasticity=0.30,
-        risk_score=50,
-        tokens_held=0
+        rent_growth=rent_growth,
+        rent_volatility=volatility,
+        supply_elasticity=prop.get("metro_elasticity", 0.30),
+        risk_score=risk_score,
+        tokens_held=int(property_value / token_price * 0.1) if token_price > 0 else 0  # Auto-allocate 10% of property value
     )
 
 
@@ -192,7 +207,7 @@ def load_stage2_files() -> List[PortfolioAsset]:
 
 
 # =========================================================
-# Portfolio Analytics (simplified for demo)
+# Portfolio Analytics
 # =========================================================
 
 class PortfolioAnalyzer:
@@ -203,7 +218,9 @@ class PortfolioAnalyzer:
         if len(self.portfolio.assets) <= 1:
             return 0
         metros = set(a.metro for a in self.portfolio.assets)
-        return min(100, len(metros) * 20 + len(self.portfolio.assets) * 5)
+        asset_score = min(50, len(self.portfolio.assets) * 10)
+        metro_score = min(50, len(metros) * 15)
+        return asset_score + metro_score
     
     def calculate_total_value(self) -> float:
         return self.portfolio.total_value
@@ -214,23 +231,23 @@ class PortfolioAnalyzer:
 # =========================================================
 
 def render_import_section() -> List[PortfolioAsset]:
-    st.header("?? Import Assets")
+    st.header("📥 Import Assets")
     
     # Option 1: Import from API
     st.subheader("Option 1: Import from API (Live)")
-    if st.button("?? Fetch Properties from API"):
+    if st.button("🔄 Fetch Properties from API"):
         with st.spinner("Fetching from API..."):
             api_properties = fetch_properties_from_api()
             if api_properties:
                 assets = [convert_api_property_to_asset(p) for p in api_properties]
-                st.success(f"Imported {len(assets)} properties from API!")
+                st.success(f"✅ Imported {len(assets)} properties from API!")
                 return assets
             else:
                 st.warning("No properties found in API. Run Stage 2 first.")
     
     # Option 2: Load demo assets
     st.subheader("Option 2: Load Demo Assets")
-    if st.button("?? Load Demo Assets"):
+    if st.button("📊 Load Demo Assets"):
         demo_assets = [
             PortfolioAsset(
                 asset_id="demo_charlotte",
@@ -283,7 +300,7 @@ def render_import_section() -> List[PortfolioAsset]:
                 tokens_held=8000
             )
         ]
-        st.success("Loaded 2 demo assets!")
+        st.success("✅ Loaded 2 demo assets!")
         return demo_assets
     
     # Option 3: Import from files
@@ -303,7 +320,7 @@ def render_import_section() -> List[PortfolioAsset]:
 
 
 def render_allocation(portfolio: Portfolio) -> Portfolio:
-    st.header("?? Portfolio Allocation")
+    st.header("💰 Portfolio Allocation")
     
     if not portfolio.assets:
         st.info("No assets. Import first.")
@@ -318,14 +335,20 @@ def render_allocation(portfolio: Portfolio) -> Portfolio:
             "Token": a.token_symbol,
             "Price": f"${a.token_price:.2f}",
             "Tokens": a.tokens_held,
-            "Value": f"${a.value_held:,.0f}"
+            "Value": f"${a.value_held:,.0f}",
+            "Expected Return": f"{a.expected_return_1y*100:.1f}%",
+            "Risk Score": f"{a.risk_score:.0f}"
         })
     
     df = pd.DataFrame(data)
     st.dataframe(df, use_container_width=True, hide_index=True)
     
     # Total value
-    st.metric("Total Portfolio Value", f"${portfolio.total_value:,.0f}")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.metric("💰 Total Portfolio Value", f"${portfolio.total_value:,.0f}")
+    with col2:
+        st.metric("📊 Number of Assets", len(portfolio.assets))
     
     return portfolio
 
@@ -335,13 +358,13 @@ def render_allocation(portfolio: Portfolio) -> Portfolio:
 # =========================================================
 
 def main():
-    st.title("?? Kejafi Stage 3: Portfolio Management")
+    st.title("📊 Kejafi Stage 3: Portfolio Management")
     st.markdown("Import assets from Stage 2 (API or files), then manage your portfolio.")
     
     if "portfolio" not in st.session_state:
         st.session_state.portfolio = Portfolio(assets=[])
     
-    tab1, tab2 = st.tabs(["?? Import Assets", "?? Portfolio"])
+    tab1, tab2 = st.tabs(["📥 Import Assets", "💰 Portfolio"])
     
     with tab1:
         imported = render_import_section()
@@ -353,11 +376,13 @@ def main():
         st.session_state.portfolio = render_allocation(st.session_state.portfolio)
         
         if st.session_state.portfolio.total_value > 0:
-            st.subheader("?? Portfolio Summary")
+            st.subheader("📈 Portfolio Summary")
             analyzer = PortfolioAnalyzer(st.session_state.portfolio)
             col1, col2 = st.columns(2)
-            col1.metric("Total Value", f"${st.session_state.portfolio.total_value:,.0f}")
-            col2.metric("Diversification Score", f"{analyzer.calculate_diversification_score():.0f}/100")
+            with col1:
+                st.metric("💰 Total Value", f"${st.session_state.portfolio.total_value:,.0f}")
+            with col2:
+                st.metric("🎯 Diversification Score", f"{analyzer.calculate_diversification_score():.0f}/100")
     
     st.markdown("---")
     st.caption(f"Kejafi Stage 3 | Pool: {POOL_ADDRESS[:10]}... | Chain: Sepolia")
