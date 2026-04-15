@@ -42,3 +42,14 @@ Thumbs.db
 # Secrets
 *.key
 *.pem
+
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.log
+paper/*.out
+paper/*.toc
+paper/*.txt
+paper/create_pdf.py
+paper/generate_figures.py
+paper/Kejafi_Paper.html
