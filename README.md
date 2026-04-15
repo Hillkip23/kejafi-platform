@@ -295,7 +295,7 @@ The full 25-page LaTeX research paper is in [`paper/`](paper/).
 
 **Hillary Cheruiyot**  
 MS Mathematical Finance — University of North Carolina at Charlotte  
-Founder, Kejafi · Founder, [Tokim Analytics](https://tokim.vercel.app)
+
 
 [![Email](https://img.shields.io/badge/Email-hcheruiyot@uncc.edu-D14836?style=flat-square&logo=gmail&logoColor=white)](mailto:hcheruiyot@uncc.edu)
 
