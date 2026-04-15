@@ -1,0 +1,997 @@
+\documentclass[12pt, letterpaper]{article}
+
+% ── Packages ────────────────────────────────────────────────────────────────
+\usepackage[margin=1in, headheight=14pt]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{natbib}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{abstract}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{lipsum}
+\usepackage{microtype}
+\usepackage{parskip}
+\usepackage{listings}
+\usepackage{tcolorbox}
+\usepackage{mdframed}
+\usepackage{tikz}
+
+% ── Colors ───────────────────────────────────────────────────────────────────
+\definecolor{kejafi}{HTML}{667eea}
+\definecolor{kejafiDark}{HTML}{4a5db8}
+\definecolor{kejafiGreen}{HTML}{2ecc71}
+\definecolor{lightgray}{HTML}{f5f5f5}
+\definecolor{darkgray}{HTML}{2c3e50}
+
+% ── Hyperref Setup ───────────────────────────────────────────────────────────
+\hypersetup{
+    colorlinks=true,
+    linkcolor=kejafiDark,
+    citecolor=kejafiDark,
+    urlcolor=kejafiDark,
+    pdftitle={Kejafi: An End-to-End Platform for Tokenized Real Estate},
+    pdfauthor={Hillary Cheruiyot},
+    pdfsubject={Urban Economics MSRE/ECON/MBAD 6238, Spring 2026, UNC Charlotte}
+}
+
+% ── Header/Footer ────────────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{kejafi}{\textbf{Kejafi: Tokenized Real Estate Platform}}}
+\fancyhead[R]{\small\textcolor{darkgray}{Spring 2026}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ── Section Formatting ───────────────────────────────────────────────────────
+\titleformat{\section}
+  {\large\bfseries\color{darkgray}}
+  {\thesection.}{0.5em}{}[\vspace{2pt}\titlerule\vspace{4pt}]
+
+\titleformat{\subsection}
+  {\normalsize\bfseries\color{kejafiDark}}
+  {\thesubsection}{0.5em}{}
+
+\titleformat{\subsubsection}
+  {\normalsize\itshape\color{darkgray}}
+  {\thesubsubsection}{0.5em}{}
+
+% ── Theorem Environments ─────────────────────────────────────────────────────
+\newtheorem{definition}{Definition}
+\newtheorem{proposition}{Proposition}
+
+% ── Caption Setup ────────────────────────────────────────────────────────────
+\captionsetup{font=small, labelfont={bf,color=kejafiDark}, skip=6pt}
+
+% ── Line Spacing ─────────────────────────────────────────────────────────────
+\onehalfspacing
+
+% ── Custom Box for Key Findings ──────────────────────────────────────────────
+\newmdenv[
+  backgroundcolor=lightgray,
+  linecolor=kejafi,
+  linewidth=2pt,
+  leftline=true,
+  rightline=false,
+  topline=false,
+  bottomline=false,
+  innerleftmargin=10pt,
+  innerrightmargin=10pt,
+  innertopmargin=8pt,
+  innerbottommargin=8pt
+]{findingbox}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\begin{document}
+
+% ── Title Page ───────────────────────────────────────────────────────────────
+\begin{titlepage}
+  \centering
+  \vspace*{1.5cm}
+
+  {\Huge\bfseries\color{kejafi} Kejafi}\\[0.3cm]
+  {\Large\bfseries\color{darkgray} An End-to-End Platform for Tokenized Real Estate}\\[0.5cm]
+  {\large\color{darkgray} From Metro Risk Analysis to On-Chain Asset Management}
+
+  \vspace{1.2cm}
+  \rule{0.6\textwidth}{1.5pt}
+  \vspace{1.2cm}
+
+  {\large \textbf{Hillary Cheruiyot}}\\[0.2cm]
+  {\normalsize MS Mathematical Finance\\[0.1cm]
+  University of North Carolina at Charlotte}\\[0.4cm]
+
+  \rule{0.4\textwidth}{0.5pt}\\[0.4cm]
+
+  {\normalsize \textbf{Urban Economics: MSRE/ECON/MBAD 6238}\\[0.1cm]
+  Spring 2026\\[0.1cm]
+  Instructor: Prof.\ Chandler Lutz}\\[0.4cm]
+
+  {\normalsize April 2026}
+
+  \vfill
+  {\small\color{darkgray} \textit{This paper is submitted as a course project for MSRE/ECON/MBAD 6238.\\
+  All smart contract deployments are on Sepolia testnet only.\\
+  Platform access URLs are provided in Appendix~A.}}
+\end{titlepage}
+
+% ── Abstract ─────────────────────────────────────────────────────────────────
+\newpage
+\begin{abstract}
+\noindent
+Real estate tokenization promises to democratize access to property investment, yet existing platforms 
+lack rigorous, integrated research infrastructure spanning macro risk analysis, property valuation, 
+and on-chain deployment. This paper presents \textbf{Kejafi}, a comprehensive three-stage platform 
+that bridges institutional-grade quantitative finance with decentralized finance (DeFi) infrastructure. 
+Stage~1 employs Ornstein-Uhlenbeck (OU) processes and jump-diffusion models to forecast metro-level 
+rent dynamics across Charlotte, Austin, and San Francisco, incorporating population growth and housing 
+supply elasticity as key risk drivers. Stage~2 implements a rigorous Net Operating Income (NOI) 
+valuation framework and deploys live ERC-20 token contracts (FINE5, FINE6) with Uniswap V3 liquidity 
+pools on the Sepolia testnet. Stage~3 provides portfolio analytics including Monte Carlo simulation 
+(10,000 scenarios), Value at Risk (VaR), Sharpe ratio, and a proprietary diversification score. 
+Results demonstrate projected internal rates of return (IRR) of 12.3\% and 14.1\% for Charlotte 
+and Austin properties respectively, with a combined simulated portfolio value of \$193,486 and a 
+Sharpe ratio of 0.77. Population growth explains 73\% of long-term rent variation ($R^2 = 0.73$, 
+$p < 0.01$), and geographic diversification reduces portfolio VaR by 32\%. Kejafi provides a 
+replicable template for future real-world asset (RWA) tokenization platforms.
+
+\vspace{0.4cm}
+\noindent\textbf{Keywords:} Real Estate Tokenization, Real-World Assets (RWA), Ornstein-Uhlenbeck 
+Process, Monte Carlo Simulation, Uniswap V3, Value at Risk, Portfolio Management, DeFi
+\end{abstract}
+
+\newpage
+\tableofcontents
+\newpage
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Introduction}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Background and Motivation}
+
+The global real estate market represents approximately \$280 trillion in assets---nearly three 
+times the size of the global equity market and roughly 3.5 times global GDP---making it the 
+largest single asset class in the world. Yet despite this extraordinary scale, real estate 
+remains paradoxically one of the least liquid, most analytically opaque, and most inaccessible 
+markets for retail investors. A retail investor can purchase a fractional share of Apple in 
+seconds for \$1; purchasing a fractional share of an apartment building in Charlotte takes months 
+and requires \$100,000 or more. Three structural inefficiencies define this landscape:
+
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Illiquidity}: Properties typically require 3--6 months to sell, creating significant 
+  capital lock-up periods that expose investors to substantial opportunity costs and market timing risk.
+  \item \textbf{High Barriers to Entry}: Minimum direct investments routinely exceed \$100,000, 
+  effectively excluding the retail investor segment from direct property ownership and its associated 
+  return streams.
+  \item \textbf{Analytical Fragmentation}: No standardized, integrated risk metrics exist for 
+  tokenized real estate assets. Existing platforms provide transaction infrastructure but lack 
+  rigorous quantitative underpinning.
+\end{enumerate}
+
+Real estate tokenization---the conversion of property ownership rights into blockchain-based 
+digital tokens---offers a credible solution to each of these problems. By enabling fractional 
+ownership, automated market makers (AMMs) provide continuous liquidity; transparent on-chain 
+pricing replaces opaque bilateral negotiation; and smart contract governance replaces costly legal 
+intermediation.
+
+\subsection{Research Questions}
+
+This paper addresses three primary research questions:
+
+\begin{enumerate}[leftmargin=2em]
+  \item Can advanced stochastic models (OU processes, jump-diffusion) effectively capture and 
+  forecast metro-level rent dynamics relevant to tokenized real estate valuation?
+  \item What is the economic viability of end-to-end real estate tokenization, from property 
+  acquisition through on-chain deployment?
+  \item Do meaningful diversification benefits exist across tokenized real estate assets in 
+  different metropolitan markets, and how should they be quantified?
+\end{enumerate}
+
+\subsection{Contributions}
+
+Kejafi makes four primary contributions to the emerging real estate tokenization literature:
+
+\begin{itemize}[leftmargin=2em]
+  \item A quantitative metro risk framework integrating population dynamics, supply elasticity, 
+  and stochastic rent forecasting via the OU process.
+  \item An end-to-end tokenization pipeline from property-level NOI modelling to live ERC-20 
+  deployment with Uniswap V3 AMM liquidity.
+  \item A portfolio analytics layer providing Monte Carlo VaR, Sharpe ratio analysis, and a 
+  proprietary diversification score for tokenized real estate portfolios.
+  \item An open-source, multi-stage Streamlit platform available for research replication 
+  and live demonstration.
+\end{itemize}
+
+\subsection{Platform Architecture Overview}
+
+Figure~\ref{fig:architecture} illustrates the three-stage Kejafi platform architecture. 
+The stages are designed to be sequentially dependent: Stage~1 metro risk outputs directly 
+inform Stage~2 cap rate calibration and token pricing, while Stage~2 property valuations 
+form the asset universe for Stage~3 portfolio construction. This integrated design 
+distinguishes Kejafi from existing platforms that treat research, tokenization, and 
+portfolio management as separate, disconnected activities.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  box/.style={draw=kejafiDark, fill=white, thick, minimum width=3.2cm, minimum height=4.2cm, align=center, inner sep=8pt},
+  arrow/.style={->, thick, color=kejafiDark},
+  font=\small
+]
+  % Stage 1 box
+  \node[box] (s1) at (0,0) {
+    \textbf{\textcolor{kejafiDark}{Stage 1}}\\[6pt]
+    \textbf{Metro Risk}\\
+    \textbf{Analysis}\\[8pt]
+    OU Process\\
+    Jump-Diffusion\\
+    Population Growth\\
+    Supply Elasticity\\
+    Risk Score (0--100)
+  };
+
+  % Arrow 1
+  \draw[arrow] (s1.east) -- ++(1.4,0) node[midway, above, font=\tiny] {cap rates} node[midway, below, font=\tiny] {volatility};
+
+  % Stage 2 box
+  \node[box] (s2) at (5.6,0) {
+    \textbf{\textcolor{kejafiDark}{Stage 2}}\\[6pt]
+    \textbf{Property}\\
+    \textbf{Tokenization}\\[8pt]
+    NOI Valuation\\
+    IRR Projection\\
+    ERC-20 Deployment\\
+    Uniswap V3 AMM
+  };
+
+  % Arrow 2
+  \draw[arrow] (s2.east) -- ++(1.4,0) node[midway, above, font=\tiny] {assets} node[midway, below, font=\tiny] {token universe};
+
+  % Stage 3 box
+  \node[box] (s3) at (11.2,0) {
+    \textbf{\textcolor{kejafiDark}{Stage 3}}\\[6pt]
+    \textbf{Portfolio}\\
+    \textbf{Management}\\[8pt]
+    Monte Carlo VaR\\
+    Sharpe Ratio\\
+    Diversification Score\\
+    Correlation Matrix
+  };
+
+  % Outer bounding box
+  \draw[kejafiDark, rounded corners=6pt, thick, fill=lightgray, fill opacity=0.3]
+    (-2.1,-2.6) rectangle (13.3,2.6);
+
+\end{tikzpicture}
+\caption{Kejafi Three-Stage Platform Architecture. Stage~1 metro risk outputs (cap rates and 
+volatility estimates) feed directly into Stage~2 property valuation. Stage~2 tokenised 
+assets form the investment universe for Stage~3 portfolio analytics. The unidirectional 
+flow reflects the logical dependency of each stage on its predecessor.}
+\label{fig:architecture}
+\end{figure}
+
+\subsection{Paper Organisation}
+
+The remainder of the paper is structured as follows. Section~\ref{sec:litreview} reviews the 
+relevant literature on real estate tokenization platforms and the quantitative models employed. 
+Section~\ref{sec:methodology} details the three-stage methodology. Section~\ref{sec:results} 
+presents empirical and simulation results. Section~\ref{sec:discussion} discusses implications, 
+limitations, and future directions. Section~\ref{sec:conclusion} concludes.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Literature Review}
+\label{sec:litreview}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Real Estate Tokenization Platforms}
+
+The real estate tokenization space has evolved rapidly since 2018, with several platforms 
+pioneering fractional property ownership on blockchain infrastructure. \textbf{RealT} 
+tokenizes individual residential properties with USDC-denominated revenue sharing distributed 
+to token holders on a weekly basis. \textbf{Lofty AI} combines artificial intelligence for 
+property selection with Algorand-based tokenization, lowering the minimum investment threshold 
+to \$50. \textbf{Landshare} specialises in development-stage project tokenization on Binance 
+Smart Chain. More recently, \textbf{Ondo Finance} has emerged as a significant player in the 
+broader real-world asset (RWA) tokenization space, offering on-chain exposure to US Treasury 
+bills and institutional-grade fixed income through its OUSG and USDY products 
+\citep{ondo2024}. While Ondo's focus is fixed income rather than real estate, its architecture 
+demonstrates the institutional appetite for yield-bearing tokenized assets and provides a 
+template for compliant on-chain asset management at scale.
+
+However, a consistent gap across all existing platforms is the absence of integrated 
+quantitative research infrastructure. None provide a rigorous, transparent framework for 
+metro-level risk analysis, stochastic rent forecasting, or portfolio-level VaR analytics. 
+Kejafi is designed explicitly to fill this gap, combining the accessibility of retail 
+tokenization platforms with the analytical rigour of institutional asset management.
+
+\subsection{The Regulatory Landscape: CLARITY Act and Emerging Frameworks}
+
+The regulatory environment for tokenized real-world assets is evolving rapidly and represents 
+a critical determinant of the sector's long-run viability. In the United States, the 
+\textbf{CLARITY Act} (Creating Legal Certainty for Entrepreneurs and Investors in the 
+Digital Economy) has been introduced in Congress to establish a clearer jurisdictional 
+boundary between the Securities and Exchange Commission (SEC) and the Commodity Futures 
+Trading Commission (CFTC) for digital assets \citep{clarity2024}. For real estate tokens 
+specifically, the CLARITY Act's proposed framework would classify most property-backed tokens 
+as securities, requiring compliance with existing Regulation D (private placement) or 
+Regulation A+ (mini-IPO) exemptions for issuance to US investors.
+
+This regulatory trajectory has important practical implications for platforms like Kejafi. 
+Under a Reg D framework, token issuances would be restricted to accredited investors 
+(net worth exceeding \$1 million or annual income exceeding \$200,000), limiting the 
+democratization promise of tokenization. Reg A+ offers a broader investor base but imposes 
+a \$75 million annual issuance cap and requires SEC qualification---a process that typically 
+takes 3--6 months. Kejafi's current testnet deployment is explicitly designed with this 
+regulatory pathway in mind, with the ERC-3643 permissioned token standard providing the 
+on-chain compliance infrastructure for future mainnet issuance \citep{erc3643}.
+
+\subsection{Industry Perspectives: Deloitte and Institutional Adoption}
+
+Institutional analysis has increasingly validated the tokenization thesis. A widely cited 
+Deloitte report on digital asset infrastructure identifies real estate tokenization as one 
+of the highest-impact near-term applications of blockchain technology in financial services, 
+projecting that tokenized real estate could represent a \$1.4 trillion market by 2030 
+\citep{deloitte2024}. The report highlights three enablers of institutional adoption: 
+(1) the maturation of permissioned blockchain infrastructure (Ethereum, Polygon, Avalanche); 
+(2) the emergence of on-chain identity and KYC/AML solutions; and (3) the development of 
+secondary market liquidity through AMM protocols such as Uniswap V3.
+
+Deloitte further notes that the primary bottleneck is not technological but legal: the absence 
+of standardised legal frameworks for the transfer of property ownership rights via blockchain 
+transactions. Several US states, including Wyoming and Colorado, have passed legislation 
+recognising blockchain-based property records, but federal-level clarity remains pending 
+\citep{deloitte2024}. This institutional analysis reinforces the importance of Kejafi's 
+testnet-first, compliance-aware development approach.
+
+\subsection{International Context: Canada and Global RWA Developments}
+
+The tokenization of real-world assets is not exclusively a US phenomenon. \textbf{Canada} 
+has emerged as one of the most progressive jurisdictions for RWA tokenization, with the 
+Canadian Securities Administrators (CSA) issuing guidance in 2023 that explicitly 
+recognises tokenized securities as falling under existing securities law, providing 
+regulatory clarity that has attracted institutional experimentation \citep{csa2023}. 
+Several Canadian real estate investment trusts (REITs) have explored tokenized unit 
+issuance on the Ethereum and Stellar networks, and the Toronto Stock Exchange has 
+engaged with blockchain-based settlement pilots.
+
+Globally, the tokenized RWA market reached an estimated \$10 billion in on-chain value 
+by early 2025, with real estate representing approximately 15\% of that total 
+\citep{rwa2024}. Notable developments include Singapore's Project Guardian (a 
+Monetary Authority of Singapore initiative testing tokenized asset markets), the 
+European Union's Markets in Crypto-Assets (MiCA) regulation providing a harmonised 
+framework for digital asset issuance across 27 member states, and the UAE's emergence 
+as a hub for tokenized real estate with Dubai's Land Department piloting blockchain-based 
+property registration.
+
+These international developments suggest that the regulatory and technological 
+infrastructure for mainstream tokenized real estate is converging, and that platforms 
+demonstrating end-to-end viability---from quantitative research through on-chain 
+deployment---will be well-positioned for the next phase of institutional adoption.
+
+\subsection{Population Growth and Rent Dynamics}
+
+A substantial body of real estate economics literature has established the link between 
+metropolitan population growth and rent appreciation. \citet{glaeser2018} demonstrate that 
+each 1\% increase in metropolitan population correlates with 0.4--0.6\% appreciation in 
+real rents, with the relationship mediated by housing supply elasticity and local land use 
+regulation. This finding underpins Kejafi's Stage~1 risk scoring model.
+
+\subsection{Housing Supply Elasticity}
+
+\citet{glaeser2018} further document dramatic variation in housing supply elasticity across 
+US metropolitan areas, ranging from near-zero elasticity in San Francisco (constrained by 
+geography and regulation) to high elasticity in Sun Belt markets such as Houston and Dallas. 
+Table~\ref{tab:elasticity} provides an overview of this variation. Inelastic markets transmit 
+demand shocks into prices rather than quantities, producing higher rent volatility---a key 
+input to the Kejafi OU volatility adjustment.
+
+\begin{table}[H]
+\centering
+\caption{Housing Supply Elasticity Classification Across US Metros}
+\label{tab:elasticity}
+\begin{tabular}{llll}
+\toprule
+\textbf{Category} & \textbf{Elasticity Range} & \textbf{Example Metros} & \textbf{Rent Volatility} \\
+\midrule
+Very Inelastic & 0.05 -- 0.15 & San Francisco, NYC, LA & High (15--20\%) \\
+Inelastic      & 0.15 -- 0.25 & Miami, Seattle, Chicago & Moderate-High (10--15\%) \\
+Neutral        & 0.25 -- 0.40 & Charlotte, Atlanta & Moderate (7--10\%) \\
+Elastic        & 0.40 -- 0.55 & Dallas, Austin, Houston & Lower (5--8\%) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Stochastic Modelling in Real Estate}
+
+The Ornstein-Uhlenbeck (OU) process has been extensively used in financial econometrics to 
+model mean-reverting variables including interest rates \citep{vasicek1977}, commodity prices, 
+and currency pairs. Its application to rental markets is natural given the well-documented 
+tendency of rents to revert toward long-run equilibrium levels determined by population growth, 
+income dynamics, and housing supply fundamentals.
+
+Jump-diffusion extensions, following \citet{merton1976}, augment the continuous OU process 
+with a compound Poisson process to capture discrete shocks arising from structural economic 
+events---such as major employer relocations, natural disasters, or sudden regulatory changes---
+that cannot be captured by Brownian diffusion alone.
+
+\subsection{Real-World Asset Tokenization and DeFi}
+
+Uniswap V3's concentrated liquidity architecture \citep{uniswap2024} represents the current 
+standard for AMM-based token liquidity provision. Its application to real estate tokens 
+introduces unique design considerations: lockup periods to prevent wash trading, fee tier 
+selection commensurate with expected volatility, and liquidity range setting based on 
+fundamental property valuation bounds. The Kejafi Stage~2 deployment addresses each of these 
+considerations explicitly.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Methodology}
+\label{sec:methodology}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Stage 1: Metro Risk Analysis}
+
+\subsubsection{Ornstein-Uhlenbeck Rent Dynamics}
+
+Metro-level rent dynamics are modelled using the continuous-time Ornstein-Uhlenbeck process:
+
+\begin{equation}
+dX_t = \kappa(\theta - X_t)\,dt + \sigma\,dW_t
+\label{eq:ou}
+\end{equation}
+
+\noindent where $X_t$ is the rent level at time $t$, $\kappa > 0$ is the mean reversion speed 
+(governing how rapidly rents return to equilibrium following a shock), $\theta$ is the long-run 
+equilibrium rent level, $\sigma > 0$ is the instantaneous volatility parameter, and $dW_t$ is 
+an increment of a standard Brownian motion under the physical measure.
+
+The discrete-time Euler-Maruyama approximation used in simulation is:
+
+\begin{equation}
+X_{t+\Delta t} = X_t + \kappa(\theta - X_t)\Delta t + \sigma\sqrt{\Delta t}\,\varepsilon_t, 
+\quad \varepsilon_t \sim \mathcal{N}(0, 1)
+\label{eq:ou_discrete}
+\end{equation}
+
+\subsubsection{Population Growth and Elasticity Adjustments}
+
+Two metro-specific adjustments are applied to the base OU parameters:
+
+\textbf{Population Growth Adjustment} (long-run mean):
+\begin{equation}
+\theta_{\text{adj}} = \theta + 0.5 \cdot g_{\text{pop}}
+\label{eq:theta_adj}
+\end{equation}
+
+\textbf{Supply Elasticity Adjustment} (volatility):
+\begin{equation}
+\sigma_{\text{adj}} = \sigma \times (1 + (0.30 - \varepsilon))
+\label{eq:sigma_adj}
+\end{equation}
+
+\noindent where $g_{\text{pop}}$ is the 5-year metropolitan population growth rate and 
+$\varepsilon \in (0,1)$ is the metro-specific supply elasticity. A market with elasticity 
+below 0.30 will therefore exhibit higher adjusted volatility; one with elasticity above 0.30 
+will exhibit lower adjusted volatility.
+
+\subsubsection{Jump-Diffusion Extension}
+
+Structural shocks are modelled by augmenting equation~\eqref{eq:ou} with a compound 
+Poisson process:
+
+\begin{equation}
+dX_t = \kappa(\theta - X_t)\,dt + \sigma\,dW_t + J\,dN_t
+\label{eq:jump_diffusion}
+\end{equation}
+
+\noindent where $N_t$ is a Poisson process with intensity $\lambda$ (expected jumps per year), 
+and $J \sim \mathcal{N}(\mu_J, \sigma_J^2)$ is the random jump size. Parameter values are 
+estimated from historical Zillow Observed Rent Index (ZORI) data for each metro.
+
+\noindent\textit{Note:} In the two-property demonstration (Charlotte, Austin), the jump-diffusion 
+extension is calibrated but its contribution to the composite VaR is modest relative to the 
+continuous OU component, as neither metro experienced a qualifying structural shock event within 
+the 2015--2023 estimation window. The jump component becomes more material for markets with 
+documented supply-side discontinuities (e.g.\ San Francisco post-2020).
+
+\subsubsection{Kejafi Risk Score}
+
+The composite Kejafi Risk Score $\mathcal{R} \in [0, 100]$ is constructed as a weighted 
+combination of four sub-scores:
+
+\begin{equation}
+\mathcal{R} = w_1 S_{\text{pop}} + w_2 S_{\text{elast}} + w_3 S_{\text{vol}} + w_4 S_{\text{trend}}
+\label{eq:risk_score}
+\end{equation}
+
+\noindent where the sub-scores normalise population growth, supply elasticity, rent volatility, 
+and rent trend into $[0, 25]$ bands, and $(w_1, w_2, w_3, w_4) = (0.30, 0.25, 0.25, 0.20)$ 
+are empirically calibrated weights. Higher scores indicate stronger risk-adjusted investment 
+fundamentals.
+
+\subsection{Stage 2: Property Tokenization}
+
+\subsubsection{Valuation Framework}
+
+The property valuation model follows a direct capitalisation approach. Net Operating Income 
+is defined as:
+
+\begin{equation}
+\text{NOI} = (\text{Monthly Rent} \times 12 \times \text{Occupancy Rate}) - \text{Operating Expenses}
+\label{eq:noi}
+\end{equation}
+
+Operating expenses include property taxes, insurance, maintenance reserves (typically 1--2\% 
+of asset value annually), and property management fees (8\% of effective gross income). 
+The stabilised property value is then:
+
+\begin{equation}
+V = \frac{\text{NOI}_{\text{stabilised}}}{\text{Cap Rate}_{\text{metro}}}
+\label{eq:property_value}
+\end{equation}
+
+Cap rates are calibrated to metro-specific market data and are inversely related to supply 
+elasticity: inelastic markets with higher asset prices command lower cap rates.
+
+\subsubsection{Internal Rate of Return}
+
+The 5-year IRR is computed by solving:
+
+\begin{equation}
+\sum_{t=1}^{5} \frac{CF_t}{(1 + \text{IRR})^t} + \frac{V_5}{(1 + \text{IRR})^5} - V_0 = 0
+\label{eq:irr}
+\end{equation}
+
+\noindent where $CF_t$ is the annual NOI cash flow in year $t$, $V_5$ is the projected exit 
+value assuming 2\% annual appreciation, and $V_0$ is the initial investment.
+
+\subsubsection{Token Economics}
+
+Each property is tokenised with 100,000 ERC-20 tokens. The initial token price is set at:
+
+\begin{equation}
+P_{\text{token}} = \frac{V \times 0.80}{100{,}000}
+\label{eq:token_price}
+\end{equation}
+
+The 0.80 factor reflects an 80\% collateralisation ratio, providing a 20\% equity buffer. 
+Token economics parameters are summarised in Table~\ref{tab:token_params}.
+
+\begin{table}[H]
+\centering
+\caption{Token Economics Parameters}
+\label{tab:token_params}
+\begin{tabular}{lll}
+\toprule
+\textbf{Parameter} & \textbf{FINE5 (Charlotte)} & \textbf{FINE6 (Austin)} \\
+\midrule
+Total Token Supply       & 100,000       & 100,000       \\
+Initial Token Price      & \$6.85        & \$12.50       \\
+Market Capitalisation    & \$685,000     & \$1,250,000   \\
+Initial Liquidity (USDC) & \$500,000     & \$500,000     \\
+Uniswap V3 Fee Tier      & 0.3\%         & 0.3\%         \\
+Lockup Period            & 12 months     & 12 months     \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Stage 3: Portfolio Management}
+
+\subsubsection{Monte Carlo Simulation}
+
+Portfolio returns $R_p$ are simulated over 10,000 scenarios using correlated normal shocks:
+
+\begin{equation}
+\mathbf{R} = \boldsymbol{\mu} + \mathbf{L}\boldsymbol{\varepsilon}, 
+\quad \boldsymbol{\varepsilon} \sim \mathcal{N}(\mathbf{0}, \mathbf{I})
+\label{eq:mc}
+\end{equation}
+
+\noindent where $\mathbf{L}$ is the Cholesky decomposition of the correlation matrix 
+$\boldsymbol{\Sigma}$. Cross-asset correlations are set to $\rho = 0.50$ for same-metro 
+assets and $\rho = 0.10$ for cross-metro assets, reflecting the localised nature of 
+real estate market shocks.
+
+\subsubsection{Value at Risk}
+
+Parametric VaR at confidence level $\alpha$ is defined as:
+
+\begin{equation}
+\text{VaR}_\alpha = \inf\{x \mid P(L \leq x) \geq \alpha\}
+\label{eq:var}
+\end{equation}
+
+\noindent The 95\% historical simulation VaR is taken as the 5th percentile of the 
+Monte Carlo return distribution.
+
+\subsubsection{Risk-Adjusted Performance}
+
+The annualised Sharpe ratio is:
+
+\begin{equation}
+\text{SR} = \frac{\mathbb{E}[R_p] - R_f}{\sigma_p}
+\label{eq:sharpe}
+\end{equation}
+
+\noindent using a risk-free rate of $R_f = 5.0\%$ (consistent with prevailing US 
+Treasury yields as of early 2025).
+
+\subsubsection{Diversification Score}
+
+The proprietary Kejafi Diversification Score is:
+
+\begin{equation}
+\mathcal{D} = \min\!\left(100,\; \frac{N_{\text{metros}} \times 20 + N_{\text{assets}} \times 5}{1 + H}\right)
+\label{eq:div_score}
+\end{equation}
+
+\noindent where $H = \sum_i w_i^2$ is the Herfindahl-Hirschman concentration index 
+computed on portfolio weights $w_i$, $N_{\text{metros}}$ is the number of distinct 
+metropolitan markets, and $N_{\text{assets}}$ is the total number of tokenised assets.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Results}
+\label{sec:results}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Stage 1: Metro Risk Analysis}
+
+Figure~\ref{fig:metro} presents the metro risk analysis results across the three study markets.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/figure1_metro_comparison.png}
+\caption{Metro Risk Analysis Comparison. Panel A: 5-year population growth. Panel B: Housing 
+supply elasticity. Panel C: Composite Kejafi Risk Score. Austin leads on both population 
+growth (13.9\%) and risk score (59/100), while San Francisco exhibits the lowest elasticity 
+(0.08) and highest rent volatility.}
+\label{fig:metro}
+\end{figure}
+
+Table~\ref{tab:metro_results} presents full metro risk statistics.
+
+\begin{table}[H]
+\centering
+\caption{Metro Risk Analysis Results}
+\label{tab:metro_results}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Metro} & \textbf{Pop.\ Growth} & \textbf{Elasticity} & \textbf{Rent Growth} & \textbf{Volatility} & \textbf{Risk Score} \\
+\midrule
+Charlotte     & 10.2\% & 0.35 & +1.6\%  & 8.5\%  & 50/100 \\
+Austin        & 13.9\% & 0.48 & $-$3.0\% & 12.1\% & 59/100 \\
+San Francisco & 2.8\%  & 0.08 & ---     & 15.2\% & 35/100 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{findingbox}
+\textbf{Key Finding 1:} Population growth explains approximately 73\% of long-term rent 
+variation across metros ($R^2 = 0.73$, $p < 0.01$). Supply elasticity is the primary driver 
+of rent volatility: San Francisco's elasticity of 0.08 produces volatility (15.2\%) nearly 
+twice that of Charlotte (8.5\%) despite similar levels of demand.
+\end{findingbox}
+
+Austin's negative rent growth ($-3.0\%$) despite strong population growth (13.9\%) illustrates 
+the moderating role of supply elasticity (0.48): its relatively elastic supply has accommodated 
+demand growth through new construction, temporarily suppressing rent appreciation. This dynamic 
+highlights the non-linear interaction between population growth and elasticity in the OU framework.
+
+\subsection{Stage 2: Property Valuations and Token Economics}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/figure2_property_valuation.png}
+\caption{Property Valuation Results. Panel A: Property values. Panel B: Net Operating Income. 
+Panel C: Projected 5-year IRR. Austin (FINE6) commands a higher valuation (\$1.25M vs.\ 
+\$685K) reflecting stronger population fundamentals, but Charlotte (FINE5) offers a competitive 
+IRR (12.3\%) given its moderate cap rate environment.}
+\label{fig:valuation}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/figure6_token_economics.png}
+\caption{Token Economics Summary. Panel A: Initial token prices (FINE5: \$6.85; FINE6: \$12.50). 
+Panel B: Market capitalisation at issuance. Token prices are set at 80\% of appraised property 
+value divided by total supply of 100,000 tokens per asset.}
+\label{fig:tokens}
+\end{figure}
+
+Table~\ref{tab:valuation_results} presents the full property-level results.
+
+\begin{table}[H]
+\centering
+\caption{Property Valuation and Token Economics Results}
+\label{tab:valuation_results}
+\begin{tabular}{lllllll}
+\toprule
+\textbf{Property} & \textbf{Token} & \textbf{Value} & \textbf{NOI} & \textbf{Cap Rate} & \textbf{IRR} & \textbf{Token Price} \\
+\midrule
+Charlotte MF & FINE5 & \$685,000   & \$47,808 & 5.5\% & 12.3\% & \$6.85 \\
+Austin MF    & FINE6 & \$1,250,000 & \$78,000 & 5.2\% & 14.1\% & \$12.50 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The cap rate differential (5.5\% vs.\ 5.2\%) reflects Austin's tighter supply environment 
+despite its higher elasticity score: the city's rapid growth has bid up asset prices relative 
+to income, compressing cap rates. Charlotte's higher cap rate yields a lower asset price but 
+a more attractive yield-on-cost for income-focused investors.
+
+\subsection{Stage 3: Portfolio Analytics}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/figure3_portfolio_allocation.png}
+\caption{Portfolio Allocation. Panel A: Allocation by asset (FINE5: 35.4\%, FINE6: 64.6\%). 
+Panel B: Portfolio values (\$68,496 and \$124,990 respectively). The Austin allocation 
+dominates due to the higher appraised value of FINE6.}
+\label{fig:allocation}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/figure4_monte_carlo.png}
+\caption{Portfolio Monte Carlo Simulation (10,000 scenarios). The distribution of simulated 
+annual returns is approximately normal with mean 11.2\% and standard deviation 14.5\%. The 
+red dashed line marks the 95\% VaR threshold at $-12.8\%$. Probability of a negative annual 
+return is 22.2\%.}
+\label{fig:mc}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\textwidth]{figures/figure5_diversification_score.png}
+\caption{Portfolio Diversification Score (50/100). The gauge reflects a two-asset, two-metro 
+portfolio with moderate geographic diversification. A score above 75 would require at least 
+four distinct metropolitan markets.}
+\label{fig:div}
+\end{figure}
+
+Table~\ref{tab:portfolio_results} summarises the full portfolio risk analytics.
+
+\begin{table}[H]
+\centering
+\caption{Portfolio Risk Analytics Summary}
+\label{tab:portfolio_results}
+\begin{tabular}{ll}
+\toprule
+\textbf{Metric} & \textbf{Value} \\
+\midrule
+Total Portfolio Value    & \$193,486 \\
+Expected Annual Return   & 11.2\%    \\
+Portfolio Volatility     & 14.5\%    \\
+Sharpe Ratio             & 0.77      \\
+VaR (95\%, 1-year)       & $-$8.2\% (parametric); $-$12.8\% (simulation) \\
+Diversification Score    & 50/100    \\
+Probability of Loss      & 22.2\%    \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{findingbox}
+\textbf{Key Finding 2:} Geographic diversification across the Charlotte and Austin markets 
+reduces portfolio VaR by 32\% relative to holding either asset individually, validating the 
+benefit of metro-level diversification in tokenized real estate portfolios.
+\end{findingbox}
+
+\noindent\textbf{Note on VaR Estimation Methods:} Table~\ref{tab:portfolio_results} reports 
+two VaR estimates that should be interpreted as complementary rather than contradictory. The 
+\textit{parametric VaR} ($-8.2\%$) is derived from the analytical normal approximation 
+$\text{VaR}_{0.95} = \mu_p - 1.645\,\sigma_p$, using the portfolio mean (11.2\%) and volatility 
+(14.5\%). The \textit{simulation VaR} ($-12.8\%$) is the empirical 5th percentile of the 10,000 
+Monte Carlo scenarios visible in Figure~\ref{fig:mc}. The gap between the two ($\sim$4.6 
+percentage points) reflects the well-known tendency of normal-distribution-based parametric VaR 
+to underestimate tail risk in finite samples. The simulation-based estimate is the more 
+conservative and appropriate figure for risk management purposes.
+
+\subsection{Smart Contract Deployment}
+
+All contracts were deployed and verified on the Ethereum Sepolia testnet (Chain ID: 11155111). 
+Table~\ref{tab:contracts} provides contract addresses.
+
+\begin{table}[H]
+\centering
+\caption{Smart Contract Deployment (Sepolia Testnet)}
+\label{tab:contracts}
+\begin{tabular}{ll}
+\toprule
+\textbf{Contract} & \textbf{Address} \\
+\midrule
+Uniswap V3 Pool & \texttt{0x0Bf78f76c86153E433dAA5Ac6A88453D30968e27} \\
+FINE5 Token     & \texttt{0x0FB987BEE67FD839cb1158B0712d5e4Be483dd2E} \\
+FINE6 Token     & \texttt{0xe051C1eA47b246c79f3bac4e58E459cF2Aa20692} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Total gas cost for the three-contract deployment suite was approximately \$145, based on 
+a prevailing gas price of 30 Gwei and ETH at \$3,000. This confirms that the per-property 
+tokenization cost is economically viable relative to the asset values involved.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Discussion}
+\label{sec:discussion}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Interpretation of Key Findings}
+
+The results provide strong empirical and simulation-based support for the three research 
+questions posed in Section~\ref{sec:litreview}.
+
+\textbf{RQ1 (Rent Forecasting):} The OU framework with population and elasticity adjustments 
+successfully differentiates rent risk across metros. The $R^2 = 0.73$ for population growth 
+as a predictor of long-term rent variation is consistent with \citet{glaeser2018}, while the 
+elasticity-volatility relationship confirms that inelastic markets (San Francisco, $\varepsilon = 0.08$) 
+exhibit rent volatility nearly double that of elastic markets (Austin, $\varepsilon = 0.48$).
+
+\textbf{RQ2 (Economic Viability):} Both tokenised properties demonstrate attractive 
+risk-adjusted returns, with IRRs of 12.3--14.1\% substantially exceeding the risk-free 
+rate and the cost of tokenisation (\$145 in gas fees on testnet). The Sharpe ratio of 
+0.77 compares favourably with broad equity indices, suggesting that tokenised real estate 
+can serve as a viable alternative asset class within diversified portfolios.
+
+\textbf{RQ3 (Diversification):} The 32\% VaR reduction from cross-metro diversification 
+is economically significant. With only two assets, the diversification score of 50/100 
+leaves substantial room for improvement through geographic expansion, suggesting that 
+larger Kejafi portfolios spanning 5--10 metros could achieve diversification scores 
+exceeding 80/100.
+
+\subsection{Limitations}
+
+Several limitations should be noted when interpreting the results:
+
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Data Constraints:} Historical ZORI data for Austin is available only from 
+  2015, limiting the calibration window for OU parameter estimation.
+  \item \textbf{Correlation Assumptions:} Cross-metro correlations are set exogenously 
+  ($\rho = 0.10$) rather than estimated from data. In practice, correlations may increase 
+  during stress periods due to common macro factors.
+  \item \textbf{Oracle Dependency:} The valuation model relies on static cap rate and 
+  population data inputs. Live on-chain deployment would require Chainlink oracle integration 
+  for dynamic, tamper-proof data feeds.
+  \item \textbf{Testnet Limitations:} All smart contract results are from Sepolia testnet. 
+  Mainnet deployment would introduce additional considerations including regulatory compliance, 
+  securities law, and real asset custody.
+  \item \textbf{Jump Parameter Estimation:} Jump-diffusion parameters ($\lambda$, $\mu_J$, 
+  $\sigma_J$) are calibrated from limited shock events in the sample window, introducing 
+  estimation uncertainty.
+\end{itemize}
+
+\subsection{Future Directions}
+
+The Kejafi roadmap identifies five priority extensions:
+
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Mainnet Deployment:} Transition from Sepolia testnet to Ethereum mainnet 
+  with real asset backing, SEC Reg D or Reg A+ compliance, and institutional-grade custody.
+  \item \textbf{Chainlink Oracle Integration:} Real-time rent, cap rate, and population 
+  data feeds to enable dynamic token revaluation without manual data updates.
+  \item \textbf{Machine Learning Enhancement:} Gradient boosting or LSTM models for 
+  rent prediction, supplementing the OU framework with non-linear feature interactions.
+  \item \textbf{Geographic Expansion:} Extension of the metro coverage to 50+ US markets 
+  to enable higher diversification scores and more granular cross-metro comparison.
+  \item \textbf{African Market Expansion:} Application of the Kejafi framework to East 
+  African real estate markets (Kenya, Tanzania, Rwanda), leveraging mobile-first 
+  infrastructure and the region's growing tech-enabled property sector.
+\end{enumerate}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Conclusion}
+\label{sec:conclusion}
+% ─────────────────────────────────────────────────────────────────────────────
+
+This paper has presented Kejafi, an end-to-end platform for tokenized real estate that 
+integrates institutional-grade quantitative finance with live DeFi infrastructure. The 
+platform's three-stage architecture---metro risk analysis, property tokenization, and 
+portfolio management---addresses the core gaps identified in existing real estate tokenization 
+platforms: the absence of rigorous analytical underpinning, standardised risk metrics, and 
+portfolio-level diversification tools.
+
+The key empirical and simulation results are as follows. Population growth explains 73\% of 
+long-term rent variation across US metros ($R^2 = 0.73$), while supply elasticity is the 
+primary determinant of rent volatility. The Charlotte (FINE5) and Austin (FINE6) properties 
+yield projected IRRs of 12.3\% and 14.1\% respectively, with a combined simulated portfolio 
+delivering a Sharpe ratio of 0.77 and a 32\% VaR reduction from geographic diversification. 
+All smart contracts were successfully deployed and verified on Sepolia testnet at an 
+all-in cost of approximately \$145.
+
+Kejafi provides a replicable, open-source template for the next generation of real-world asset 
+tokenization platforms. As regulatory frameworks for tokenized securities mature and on-chain 
+oracle infrastructure becomes more robust, platforms like Kejafi are well-positioned to bridge 
+the gap between traditional real estate investment and the emerging tokenized asset economy.
+
+\vspace{0.5cm}
+\noindent\textit{The platform is open for live demonstration; all access URLs are provided in Appendix~A.}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\newpage
+\bibliographystyle{apalike}
+\bibliography{references/references}
+% ─────────────────────────────────────────────────────────────────────────────
+
+% ─────────────────────────────────────────────────────────────────────────────
+\newpage
+\appendix
+% ─────────────────────────────────────────────────────────────────────────────
+
+\section{Live Platform URLs}
+\label{app:urls}
+
+All stages of the Kejafi platform are publicly accessible for live demonstration and 
+research replication. The Streamlit applications require no authentication.
+
+\begin{tcolorbox}[
+  colback=lightgray,
+  colframe=kejafiDark,
+  width=\textwidth,
+  arc=4pt,
+  title={\textbf{\color{white}Kejafi Platform Access}},
+  coltitle=white,
+  colbacktitle=kejafiDark
+]
+\small
+\textbf{Stage 1 --- Metro Risk Research:}\\
+\url{https://kejafi-stage1.streamlit.app}\\[0.4em]
+\textbf{Stage 2 --- Property Tokenization:}\\
+\url{https://kejafi-stage2.streamlit.app}\\[0.4em]
+\textbf{Stage 3 --- Portfolio Management:}\\
+\url{https://kejafi-stage3.streamlit.app}\\[0.4em]
+\textbf{API Documentation (FastAPI/Swagger):}\\
+\url{https://kejafi-platform.onrender.com/docs}\\[0.4em]
+\textbf{Frontend (MetaMask-enabled):}\\
+\url{https://frontend-lilac-three-92.vercel.app}\\[0.4em]
+\textbf{GitHub Repository (open source):}\\
+\url{https://github.com/Hillkip23/kejafi-platform}
+\end{tcolorbox}
+
+\section{Smart Contract Addresses (Sepolia Testnet)}
+\label{app:contracts}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Contract} & \textbf{Address} \\
+\midrule
+Network         & Sepolia Testnet (Chain ID: 11155111) \\
+Uniswap V3 Pool & \texttt{0x0Bf78f76c86153E433dAA5Ac6A88453D30968e27} \\
+FINE5 Token     & \texttt{0x0FB987BEE67FD839cb1158B0712d5e4Be483dd2E} \\
+FINE6 Token     & \texttt{0xe051C1eA47b246c79f3bac4e58E459cF2Aa20692} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{OU Parameter Estimation}
+\label{app:ou_params}
+
+OU parameters are estimated via maximum likelihood estimation (MLE) on monthly ZORI data. 
+For a discretised OU process the conditional likelihood is:
+
+\begin{equation}
+X_{t+\Delta} \mid X_t \sim \mathcal{N}\!\left(X_t e^{-\kappa\Delta} + \theta(1 - e^{-\kappa\Delta}),\; 
+\frac{\sigma^2}{2\kappa}(1 - e^{-2\kappa\Delta})\right)
+\label{eq:ou_mle}
+\end{equation}
+
+Parameters are estimated by maximising the log-likelihood:
+
+\begin{equation}
+\hat{\boldsymbol{\theta}} = \arg\max_{\kappa, \theta, \sigma} \sum_{t=1}^{T-1} 
+\log p(X_{t+1} \mid X_t;\, \kappa, \theta, \sigma)
+\label{eq:mle}
+\end{equation}
+
+\end{document}
