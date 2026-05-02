@@ -70,3 +70,5 @@ paper/*.pdf
 paper/create_pdf.py
 paper/generate_figures.py
 paper/Kejafi_Paper.html
+
+assets/
