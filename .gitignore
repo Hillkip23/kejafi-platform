@@ -17,18 +17,26 @@ env/
 .streamlit/secrets.toml
 .streamlit/cache/
 
-# Data storage (keep structure, ignore content)
+# Data storage
 api_data/
 stage1_output/
 stage2_output/
 stage3_output/
 figures/
 
-# Frontend
-frontend/node_modules/
-frontend/.next/
+# Node / Next.js
+node_modules/
+.next/
+out/
+coverage/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Frontend-specific env
 frontend/.env.local
-frontend/out/
+kejafi-app/.env.local
 
 # IDE
 .vscode/
@@ -43,6 +51,7 @@ Thumbs.db
 *.key
 *.pem
 
+# LaTeX build artifacts
 paper/*.aux
 paper/*.bbl
 paper/*.blg
@@ -50,6 +59,9 @@ paper/*.log
 paper/*.out
 paper/*.toc
 paper/*.txt
+paper/*.pdf
+
+# Optional generated scripts/artifacts
 paper/create_pdf.py
 paper/generate_figures.py
 paper/Kejafi_Paper.html
